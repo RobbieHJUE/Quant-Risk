@@ -1,0 +1,49 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# R
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# Quarto / RMarkdown
+*_files/
+*_cache/
+
+# Data / outputs (通常不提交大文件；如果老师要求提交结果就别忽略 reports/)
+data/processed/
+outputs/
+*.pkl
+*.joblib
+*.rds
+*.feather
+*.parquet
+*.sqlite
+*.db
+
+# Logs
+*.log
