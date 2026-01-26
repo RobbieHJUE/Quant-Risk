@@ -1,0 +1,3 @@
+[submodule "course"]
+	path = course
+	url = https://github.com/dompazz/FinTech-545-Fall2025.git
