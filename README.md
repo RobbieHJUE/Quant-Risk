@@ -7,11 +7,10 @@ This repository contains my coursework, code, and results for **FinTech 545**.
 - `course/`: **Course materials repo (submodule)** — provided by instructor (read-only).
 - `hw/`: Homework folders (each homework is self-contained).
 
-## Setup
 
-### Option A: Python (recommended)
+## Course updates (submodule)
 ```bash
-python -m venv .venv
-# Windows:
-.\.venv\Scripts\activate
-pip install -r requirements.txt
+git submodule update --remote --merge
+git add course
+git commit -m "Update course materials"
+git push
