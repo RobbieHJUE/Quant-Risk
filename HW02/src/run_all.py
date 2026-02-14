@@ -10,19 +10,13 @@ OUT_DIR = r"HW02/out"
 
 # I/O helpers
 def write_matrix_csv(mat: pd.DataFrame, out_path: str, label_col: str = "var") -> None:
-    """Write a labeled square matrix to CSV with an explicit index/label column."""
     out_df = mat.copy()
     out_df.insert(0, label_col, out_df.index.astype(str))
     out_df.to_csv(out_path, index=False)
 
 
 def read_matrix_csv(path: str) -> pd.DataFrame:
-    """
-    Read a square matrix CSV.
-    Supports either:
-      - first column is a non-numeric label column (e.g. 'var')
-      - pure numeric matrix (no label column)
-    """
+    
     df = pd.read_csv(path)
 
     has_label_col = df.shape[1] >= 2 and not np.issubdtype(df.iloc[:, 0].dtype, np.number)
@@ -36,12 +30,10 @@ def read_matrix_csv(path: str) -> pd.DataFrame:
 
 
 def numeric_only(df: pd.DataFrame) -> pd.DataFrame:
-    """Keep numeric columns only."""
     return df.select_dtypes(include=[np.number]).copy()
 
 # Pairwise covariance/correlation
 def pairwise_cov(df: pd.DataFrame) -> pd.DataFrame:
-    """Pairwise covariance: cov(i,j) uses rows where both i and j are present."""
     cols = list(df.columns)
     p = len(cols)
     out = pd.DataFrame(np.nan, index=cols, columns=cols, dtype=float)
@@ -66,7 +58,6 @@ def pairwise_cov(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def pairwise_corr(df: pd.DataFrame) -> pd.DataFrame:
-    """Pairwise correlation: corr(i,j) uses rows where both i and j are present."""
     cols = list(df.columns)
     p = len(cols)
     out = pd.DataFrame(np.nan, index=cols, columns=cols, dtype=float)
@@ -174,8 +165,8 @@ def higham_near_psd_with_fixed_diag(
 ) -> np.ndarray:
     """
     Higham-style alternating projections:
-      1) project to PSD
-      2) reset diagonal to diag_target
+    project to PSD
+    reset diagonal to diag_target
     """
     Y = A.copy()
     deltaS = np.zeros_like(A)
