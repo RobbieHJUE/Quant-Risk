@@ -79,7 +79,6 @@ def main():
     diffs = {}
     all_pass = True
 
-    # ---- 5.x matrices ----
     for t in matrix_tests:
         exp = os.path.join(COURSE_DATA, f"testout_{t}.csv")
         got = os.path.join(OUT_DIR, f"testout_{t}.csv")
@@ -91,7 +90,6 @@ def main():
             all_pass = False
             print(f"FAIL {t}  {e}")
 
-    # ---- 8.x scalars: special naming ----
     scalar_map = {
         "8.1": "testout8_1.csv",
         "8.2": "testout8_2.csv",

@@ -1,21 +1,17 @@
 import os
 import numpy as np
 import pandas as pd
-from scipy import stats  # Required for Part 8
+from scipy import stats 
 
-# ================= Configuration =================
 COURSE_DATA = r"course/testfiles/data"
 OUT_DIR = r"HW03/out"
 
 N_SIMS = 100_000
 SEED = 100000
-ALPHA = 0.05  # default alpha if file doesn't provide it
+ALPHA = 0.05 
 
-
-# ---------- IO helpers ----------
 def read_matrix_csv(path: str) -> pd.DataFrame:
     df = pd.read_csv(path)
-    # If first column is labels (e.g., var), use it as index
     if df.shape[1] >= 2 and not np.issubdtype(df.iloc[:, 0].dtype, np.number):
         idx = df.iloc[:, 0].astype(str)
         mat = df.iloc[:, 1:].astype(float)
@@ -31,7 +27,6 @@ def write_matrix_csv(mat: pd.DataFrame, out_path: str) -> None:
     out_df.to_csv(out_path, index=False)
 
 
-# ---------- Linear algebra helpers ----------
 def proj_psd(A: np.ndarray) -> np.ndarray:
     A = 0.5 * (A + A.T)
     w, V = np.linalg.eigh(A)
@@ -164,8 +159,6 @@ def simulate_cov_from_sigma(Sigma: pd.DataFrame, n_sims: int, seed: int) -> pd.D
     rs = np.random.RandomState(seed)
     Z = rs.standard_normal(size=(n_sims, S.shape[0]))
     X = Z @ L.T
-
-    # keep your convention as-is (you said Part 5 is OK)
     Scov = np.cov(X, rowvar=False)  # ddof=0
     return pd.DataFrame(Scov, index=cols, columns=cols)
 
@@ -196,8 +189,6 @@ def pca_simulate_cov(Sigma: pd.DataFrame, explained: float, n_sims: int, seed: i
     Scov = np.cov(X, rowvar=False, ddof=1)
     return pd.DataFrame(Scov, index=cols, columns=cols)
 
-
-# ---------- Part 5 ----------
 def run_part5():
     os.makedirs(OUT_DIR, exist_ok=True)
 
@@ -223,8 +214,6 @@ def run_part5():
 
     print("Part 5 wrote: testout_5.1.csv ... testout_5.5.csv")
 
-
-# ---------- Part 8 (VaR) ----------
 def read_series_and_alpha(path: str, default_alpha: float = ALPHA):
     """
     Returns (x, alpha):
@@ -258,32 +247,26 @@ def var_metrics_from_quantile(q: float, mean_value: float) -> pd.DataFrame:
       - VaR Diff from Mean = mean - q
     """
     return pd.DataFrame(
-        {
-            "VaR Absolute": [float(-q)],
-            "VaR Diff from Mean": [float(mean_value - q)],
+        {"VaR Absolute": [float(-q)],
+        "VaR Diff from Mean": [float(mean_value - q)],
         }
     )
 
 
 def run_part8():
     os.makedirs(OUT_DIR, exist_ok=True)
-
-    # 8.1 VaR from Normal Distribution
     x1, a1 = read_series_and_alpha(os.path.join(COURSE_DATA, "test7_1.csv"))
     mu1 = float(np.mean(x1))
     sd1 = float(np.std(x1, ddof=1))
     q1 = float(mu1 + sd1 * stats.norm.ppf(a1))
     out81 = var_metrics_from_quantile(q1, mu1)
     out81.to_csv(os.path.join(OUT_DIR, "testout8_1.csv"), index=False)
-
-    # 8.2 VaR from T Distribution
     x2, a2 = read_series_and_alpha(os.path.join(COURSE_DATA, "test7_2.csv"))
     nu, loc, scale = stats.t.fit(x2)
     q2 = float(stats.t.ppf(a2, df=nu, loc=loc, scale=scale))
     out82 = var_metrics_from_quantile(q2, float(loc))
     out82.to_csv(os.path.join(OUT_DIR, "testout8_2.csv"), index=False)
 
-    # 8.3 VaR from Simulation (compare to 8.2)
     rs = np.random.RandomState(SEED)
     sim = stats.t.rvs(df=nu, loc=loc, scale=scale, size=N_SIMS, random_state=rs)
     q3 = float(np.quantile(sim, a2))
