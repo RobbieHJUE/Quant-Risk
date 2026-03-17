@@ -6,7 +6,7 @@ Inputs and expected outputs are provided by the course submodule under `course/`
 
 python HW04/src/run_all.py
 
-After running, the generated output files will be saved in `HW03/out/`.
+After running, the generated output files will be saved in `HW04/out/`.
 
 
 
