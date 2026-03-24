@@ -53,9 +53,7 @@ def ensure_positive(x: float, eps: float = 1e-12) -> float:
     return max(float(x), eps)
 
 
-# =========================================================
 # 12.1 European Options GBSM including Greeks
-# =========================================================
 def gbsm_price_greeks(S, K, T, r, q, sigma, option_type):
     """
     Generalized Black-Scholes-Merton with continuous dividend yield q.
@@ -106,10 +104,7 @@ def gbsm_price_greeks(S, K, T, r, q, sigma, option_type):
     }
 
 
-# =========================================================
 # 12.2 American Options with continuous Dividends including Greeks
-# =========================================================
-
 def american_binomial_continuous_price_b(
     S, K, T, r, b, sigma, option_type, steps=400
 ):
@@ -130,8 +125,6 @@ def american_binomial_continuous_price_b(
     u = math.exp(sigma * math.sqrt(dt))
     d = 1.0 / u
     disc = math.exp(-r * dt)
-
-    # IMPORTANT: probability uses b, not r directly
     p = (math.exp(b * dt) - d) / (u - d)
     p = min(max(p, 0.0), 1.0)
 
@@ -154,7 +147,6 @@ def american_binomial_continuous_price_b(
                 exercise = max(K - stock, 0.0)
             new_vals[j] = max(exercise, continuation)
         vals = new_vals
-
     return float(vals[0])
 
 
@@ -171,9 +163,7 @@ def american_continuous_dividend_price_greeks(
     K = ensure_positive(K)
     T = ensure_positive(T)
     sigma = ensure_positive(sigma)
-
     b = r - q
-
     if T <= 1e-12:
         intrinsic = max(S - K, 0.0) if option_type == "call" else max(K - S, 0.0)
         return {
@@ -246,7 +236,7 @@ def american_continuous_dividend_price_greeks(
     # Theta
     theta = (Vud - price) / (2.0 * dt)
 
-    # Vega: bump sigma, keep r and b fixed
+    # Vega
     hV = 1e-4
     upV = american_binomial_continuous_price_b(
         S, K, T, r, b, sigma + hV, option_type, steps=steps
@@ -256,7 +246,7 @@ def american_continuous_dividend_price_greeks(
     )
     vega = (upV - dnV) / (2.0 * hV)
 
-    # Rho: bump r, HOLD b FIXED
+    # Rho
     hR = 1e-4
     upR = american_binomial_continuous_price_b(
         S, K, T, r + hR, b, sigma, option_type, steps=steps
@@ -276,9 +266,7 @@ def american_continuous_dividend_price_greeks(
     }
 
 
-# =========================================================
 # 12.3 American Options with discrete Dividends
-# =========================================================
 def parse_dividend_list(x):
     """
     Input examples:
@@ -310,11 +298,10 @@ def american_binomial_discrete_dividend_price(
 ):
     """
     American option with discrete cash dividends using a step-by-step binomial tree.
-
     Assumption:
-    - dividend_times are in YEARS from today
-    - dividend_amounts are cash dividends
-    - dividends with time <= T are applied
+    dividend_times are in YEARS from today
+    dividend_amounts are cash dividends
+    dividends with time <= T are applied
     """
     option_type = parse_option_type(option_type)
 
@@ -351,7 +338,7 @@ def american_binomial_discrete_dividend_price(
         prev = stock_tree[-1]
         curr = [0.0] * (i + 1)
 
-        # first node (all downs)
+        # first node
         curr[0] = prev[0] * d
         # interior
         for j in range(1, i):
@@ -394,9 +381,7 @@ def american_binomial_discrete_dividend_price(
     return float(values[0])
 
 
-# =========================================================
 # File runners
-# =========================================================
 def run_12_1(input_path: Path, output_path: Path):
     df = pd.read_csv(input_path)
     df.columns = df.columns.str.strip()
@@ -507,12 +492,10 @@ def run_12_3(input_path: Path, output_path: Path, steps=500):
         )
 
         rows.append(
-            {
-                "ID": row["ID"],
+            { "ID": row["ID"],
                 "Price": price,
             }
         )
-
     out = pd.DataFrame(rows)
     out.to_csv(output_path, index=False)
 
