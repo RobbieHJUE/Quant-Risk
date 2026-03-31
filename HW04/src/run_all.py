@@ -20,15 +20,10 @@ class Config:
     alpha_es: float = 0.05
 
 
-
 def ensure_dir(path: str | Path) -> Path:
     p = Path(path)
     p.mkdir(parents=True, exist_ok=True)
     return p
-
-
-def write_json(path: Path, obj: Any) -> None:
-    path.write_text(json.dumps(obj, indent=2, default=str), encoding="utf-8")
 
 
 def write_csv(path: Path, df: pd.DataFrame) -> None:

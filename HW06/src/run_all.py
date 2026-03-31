@@ -35,9 +35,7 @@ def must_exist(data_dir: Path, name: str) -> Path:
     return p
 
 
-# =========================
 # Task 10 helpers
-# =========================
 
 def read_cov_matrix(path: Path) -> tuple[np.ndarray, list[str]]:
     df = pd.read_csv(path)
@@ -238,9 +236,7 @@ def solve_max_sharpe(
     return best_w
 
 
-# =========================
 # Task 11 helpers
-# =========================
 
 def total_return(x: np.ndarray) -> float:
     return float(np.prod(1.0 + x) - 1.0)
@@ -287,9 +283,7 @@ def vol_attr_from_contrib(contrib: np.ndarray, rp: np.ndarray) -> np.ndarray:
     ])
 
 
-# =========================
 # Task 10
-# =========================
 
 def task_10_1(cfg: Config, data_dir: Path, out_dir: Path) -> pd.DataFrame:
     cov, _ = read_cov_matrix(must_exist(data_dir, "test5_2.csv"))
@@ -318,9 +312,7 @@ def task_10_4(cfg: Config, data_dir: Path, out_dir: Path, rng: np.random.Generat
     return save_weights(w, out_dir / "testout10_4.csv")
 
 
-# =========================
 # Task 11
-# =========================
 
 def task_11_1(cfg: Config, data_dir: Path, out_dir: Path) -> pd.DataFrame:
     returns = pd.read_csv(must_exist(data_dir, "test11_1_returns.csv"))
